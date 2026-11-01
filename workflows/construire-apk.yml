@@ -1,0 +1,57 @@
+name: OrChiD - compiler APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'orchid/**'
+      - 'tests/**'
+      - '.github/workflows/construire-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  compiler:
+    name: Compiler OrChiD 1.2.4 (APK debug)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Récupérer les sources
+        uses: actions/checkout@v4
+
+      - name: Installer Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installer le SDK Android
+        uses: android-actions/setup-android@v3
+
+      - name: Installer la plateforme Android 35
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
+
+      - name: Configurer Gradle 8.9 (compatible AGP 8.7.3)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Tests audio hors Android
+        run: python3 tests/run_audio_tests.py
+
+      - name: Compiler l'APK installable
+        working-directory: orchid
+        run: gradle --no-daemon --stacktrace --console=plain :app:assembleDebug
+
+      - name: Publier l'APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrChiD-1.2.4-APK-debug
+          path: orchid/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
