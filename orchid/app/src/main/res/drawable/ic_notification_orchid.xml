@@ -1,0 +1,6 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="48" android:viewportHeight="48">
+<!-- Monochrome orchid microphone silhouette for Android notification masks. -->
+<path android:fillColor="#FFFFFF" android:pathData="M24,2C17,7 14,12 16,17C18,14 21,13 24,13C27,13 30,14 32,17C34,12 31,7 24,2Z M4,13C2,24 7,32 16,34L17,30V22C13,16 9,13 4,13Z M44,13C46,24 41,32 32,34L31,30V22C35,16 39,13 44,13Z"/>
+<path android:fillColor="#FFFFFF" android:fillType="evenOdd" android:pathData="M24,15C20.1,15 17,18.1 17,22V29C17,32.9 20.1,36 24,36C27.9,36 31,32.9 31,29V22C31,18.1 27.9,15 24,15Z M24,18C26.2,18 28,19.8 28,22V29C28,31.2 26.2,33 24,33C21.8,33 20,31.2 20,29V22C20,19.8 21.8,18 24,18Z"/>
+<path android:fillColor="@android:color/transparent" android:strokeColor="#FFFFFF" android:strokeWidth="2.5" android:strokeLineCap="round" android:pathData="M14,29C14,36 18,39 24,39C30,39 34,36 34,29 M24,39V44 M18,45H30 M18,24H21 M18,28H21 M27,24H30 M27,28H30"/>
+</vector>

@@ -1,0 +1,13 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'fr.ilamartin.orchid'
+ compileSdk 35
+ buildToolsVersion '35.0.0'
+ defaultConfig { applicationId 'fr.ilamartin.orchid'; minSdk 26; targetSdk 35; versionCode 16; versionName '1.2.4' }
+ buildTypes { release { minifyEnabled false } }
+ androidResources { noCompress 'zip' }
+}
+dependencies {
+ implementation 'net.java.dev.jna:jna:5.13.0@aar'
+ implementation 'com.alphacephei:vosk-android:0.3.47@aar'
+}

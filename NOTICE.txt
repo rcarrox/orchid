@@ -1,0 +1,53 @@
+OrChiD 1.2.4 — Sources (versionCode 16)
+Base modifiée : OrChiD 1.2.3 (versionCode 15), source reçue.
+
+1. ANNONCES VOCALES INTERMITTENTES
+- Le bip est direct (AudioTrack), mais le texte exige une synthèse TTS hors ligne
+  puis une lecture MediaPlayer. Le code 1.2.3 pouvait émettre le bip puis
+  terminer une réponse si la synthèse échouait (aucune relance).
+- La synthèse utilisait le même moteur TextToSpeech pour plusieurs demandes
+  en parallèle : avec setVoice(...) et synthesizeToFile(...), un moteur Android
+  peut échouer ou allonger fortement les délais sous charge.
+- Les synthèses sont désormais sérialisées en FIFO sur le moteur TTS.
+  ATTENTION : cette sérialisation ne limite pas la lecture des annonces :
+  les fichiers déjà synthétisés continuent à pouvoir être joués simultanément.
+- Réessai unique en cas d'échec de synthèse / sortie vide / refus TTS / délai.
+  Délai de synthèse borné selon la longueur du texte (15 à 35 s par essai).
+  Les callbacks anciens/annulés ne perturbent pas la nouvelle synthèse.
+- Les fichiers de voix en cache sont réutilisés pour une réponse identique.
+- Lors d'une détection, le bip part immédiatement, puis la voix commence
+  lorsque son propre bip est terminé ET que sa synthèse est prête.
+  La voix peut arriver après le bip en cas de préparation lente.
+- Si aucune voix hors ligne compatible n'est installée pour la langue définie,
+  l'application signale désormais explicitement le problème dans les diagnostics.
+- La bascule « Bip seul / Bip + annonce » et les textes volontairement vides
+  gardent leur sens : dans ces situations, l'absence de parole est volontaire.
+- Une lecture MediaPlayer défaillante ou un échec de préparation est distingué
+  d'un échec de synthèse, avec traces accessibles aux réglages.
+- Réglages : « Dernière sortie audio » et « Incidents audio (N) » enregistrent
+  la dernière étape connue et le dernier échec, sans être écrasés par le statut
+  du microphone. « Effacer les dernières reconnaissances » les réinitialise.
+
+2. NOTIFICATION
+- Petite icône à gauche : ic_notification_orchid, inchangée.
+- Grande icône à droite : supprimée (retrait de setLargeIcon).
+- Titre de contenu : « Microphone actif », sans seconde ligne de texte.
+- Android peut toujours afficher lui-même le nom de l'application « OrchiD »
+  comme en-tête système de notification. Il n'est pas ajouté au contenu ici.
+- Bouton « Arrêter » conservé.
+
+3. COMPATIBILITÉ / LIMITE DE VALIDATION
+- applicationId et package inchangés : fr.ilamartin.orchid.
+- Pas de suppression ni de migration des entrées/configuration utilisateur.
+- Même modèle de reconnaissance et ressources, bips existants conservés.
+- Tests JVM : ordonnanceur (OutputScheduler), audio bip (Bips), gestion
+  de synthèse (OfflineVoice), et intégration sortie TTS/MediaPlayer
+  (SoundOutputs). Tests audio réalisés avec doubles Android, pas sur téléphone.
+- Pas de compilation Android APK dans cet environnement (SDK/Gradle Android
+  et signature de publication indisponibles). Cet archive contient les sources,
+  pas un APK prétendument testé. La versionCode doit rester 16 pour ce correctif.
+
+Pour les tests audio sans dépendance externe :
+  python3 tests/run_audio_tests.py
+Pour tous les tests, dont les tests org.json :
+  python3 tests/run_tests.py --json-jar /chemin/json-20240303.jar

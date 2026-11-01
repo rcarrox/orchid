@@ -1,0 +1,107 @@
+OrchiD 1.2.3 léger — versionCode 15
+Base : OrchiD 1.2.2 / 14. Mise à jour Android uniquement.
+
+CORRECTION DU BIP
+Le contrôle de la version 1.2.2 rejetait STATE_NO_STATIC_DATA avant le premier
+chargement des échantillons. Cet état est normal pour un AudioTrack MODE_STATIC.
+La création échouée est maintenant distinguée de cet état d'attente ; le bip est
+chargé par write(), puis l'état STATE_INITIALIZED est vérifié avant play().
+Les erreurs réelles de création et d'écriture restent signalées explicitement.
+Annulation, libération des pistes et fin de réponse sont conservées.
+Référence Android : https://developer.android.com/reference/android/media/AudioTrack
+
+BIP PAR ENTRÉE
+- Ajouter/modifier une entrée > Bip associé : Défaut, Aucun, ou chacun des 15 bips.
+  Le bip s'applique à toutes les variantes séparées par ; de la même entrée.
+- Défaut est sélectionné pour les nouvelles entrées et celles des anciennes
+  versions sans champ bip. Il suit le réglage général, y compris ses changements.
+- Aucun supprime uniquement le bip de cette entrée ; son annonce reste possible.
+- Préécoute du bip choisi par petite icône lecture. Tester la réponse prend aussi
+  en compte la sélection en cours, avant même l'enregistrement de l'entrée.
+- La fenêtre d'édition est défilante afin de garder ses champs accessibles.
+- La liste affiche le bip lorsqu'un choix spécifique remplace Défaut.
+- Le choix est mémorisé dans le champ JSON bip de l'entrée. Champ absent, nul
+  ou inconnu : Défaut. Listes, identifiants, états, langues et textes conservés.
+- La réponse prend un instantané du bip effectif lors du déclenchement ; un
+  changement ultérieur n'altère pas les réponses déjà en attente.
+
+VÉRIFICATIONS 1.2.3
+Compilation Android AAPT2/javac/D8 (JDK 17, SDK/build-tools 35), zipalign,
+apksigner ; même identifiant et signature, versionCode 15, versionName 1.2.3.
+Onze suites JVM réussies, dont les huit suites de la 1.2.2 et trois ajouts :
+- Héritage du bip général, choix par entrée, Aucun, identifiants/labels valides.
+- Anciennes entrées JSON et aller-retour sérialisé de tous les choix de bip.
+- Cycle de lecture Bips avec doublure AudioTrack : état initial sans données,
+  chargement, lecture, quatre WAV doux et bip historique, Aucun, erreurs,
+  libération, annulation avec callback unique et pistes indépendantes.
+Ce dernier test échoue sur le Bips inchangé de 1.2.2 avec le message signalé,
+puis passe sur 1.2.3. Il simule Android et ne valide pas la sortie matérielle.
+Pas de test sur téléphone, de sélection UI sur appareil ou de mesure acoustique.
+Logo, bibliothèques natives et quatre WAV d'origine conservés.
+Gradle/lint non relancés. Instructions de tests dans tests/README.txt.
+Installer par-dessus la version actuelle sans désinstaller.
+Aucun modèle, donnée utilisateur ou clé privée dans les livrables.
+
+FONCTIONS CONSERVÉES DEPUIS 1.2.2
+- Logo fourni orchid(4).png, avec bord plus arrondi : accueil, icônes Android
+  aux cinq densités et grande icône de notification. Nom visible OrchiD.
+- Boutons Démarrer/Arrêter en dégradés violets assortis au logo, texte blanc,
+  pictogrammes lecture/arrêt et coins arrondis.
+- Intervalle minimum par défaut : 0 seconde, lorsqu'aucune valeur n'existe.
+  Un choix déjà enregistré reste conservé. Le champ vide/invalide revient à 0.
+  Protection contre les déclenchements partiels multiples d'une même phrase.
+- Sons Petites marches, Halo, Cristal tendre, Rivage conservés intégralement,
+  sans resynthèse et sans doublon. Ils étaient déjà inclus dans la base.
+- Réglages > Gestion des sorties sonores :
+  * Un par un : mettre les nouvelles réponses en attente et les jouer en ordre.
+  * Écraser : couper tous les sons des réponses précédentes, supprimer les
+    réponses en attente et commencer la nouvelle.
+  * Superposer (défaut) : démarrer la nouvelle réponse sans attendre la fin des
+    réponses déjà jouées ; bips et annonces de plusieurs réponses peuvent coexister.
+  * Silencieux : si une réponse est en cours ou en attente, ignorer la nouvelle.
+    Au repos, jouer la prochaine réponse normalement. Ce n'est pas un mute global.
+  Une réponse correspond à son bip puis, facultativement, son annonce.
+  Les sorties en attente conservent le bip/texte/langue et le choix d'annonce
+  qui existaient lors de la détection. Le nouveau mode s'applique aux nouvelles
+  soumissions ; Écraser efface également les anciennes attentes.
+- Synthèse vocale Android hors ligne vers des clips indépendants, puis lecture
+  MediaPlayer, afin d'autoriser la superposition réelle des annonces vocales.
+  Les 64 premiers clips distincts sont réutilisés pendant la vie du service.
+  Cache privé local de synthèse, nettoyé à la fermeture normale du service.
+  Aucun enregistrement du microphone et aucun transfert audio.
+  Une première synthèse peut introduire une latence, dépendant de la voix Android.
+  Le bip commence sans attendre cette préparation ; le texte attend toujours
+  la fin de son propre bip. Il n'y a pas de garantie de délai audio nul.
+  Un moteur/une voix ne permettant pas la synthèse locale provoque un message
+  explicite ; aucune voix réseau ni retour à une file vocale unique cachée.
+- Arrêter l'écoute annule les réponses en cours et en attente.
+- Thème clair optionnel et mémorisé, appliqué à l'accueil, aux cartes, textes,
+  champs, icônes et boîtes de dialogue ; le thème sombre reste le défaut.
+  Le changement de thème recrée l'activité sans arrêter le service d'écoute.
+- Fondus de 200 ms : fenêtres de l'application, ouverture/fermeture des dialogues,
+  masquage/affichage de la liste et modifications des cartes. Les textes de statut
+  changent avec 100 ms de disparition puis 100 ms d'apparition. Le changement de
+  thème utilise une sortie de 200 ms et une entrée de 200 ms.
+  Les fenêtres système (autorisations, sélecteur de fichiers, réglages Android)
+  gardent leurs propres animations et ne sont pas contrôlées par OrchiD.
+
+FONCTIONS CONSERVÉES
+- Identifiant fr.ilamartin.orchid et clé de signature inchangés ; installation
+  par-dessus la version précédente sans désinstaller, pour préserver les données.
+- Liste modifiable pendant l'écoute, variantes séparées par ;, langues de
+  reconnaissance et prononciation indépendantes, texte facultatif et activation.
+- Ajout toujours accessible même lorsque la liste est masquée ; état mémorisé.
+- Vocabulaire ciblé par langue avec contrastes et [unk], grammaire reconstruite
+  uniquement lorsque son contenu change, aucun repli en transcription générale.
+- Mode Fiable par défaut, Rapide avec stabilité 350 ms, seuil initial 0,85,
+  rejet des scores manquants et diagnostic de la variante réellement détectée.
+- Aucun plafond fixe à trois langues ; seules celles des entrées activées et
+  installées sont chargées. Plus de langues augmentent mémoire/calcul/batterie.
+- Installation sélective fr/en/zh, reprise des téléchargements et import ZIP
+  local par langue, modèle manquant signalé, écoute en attente sans modèle.
+- Import TXT des mots-clés ou contrastes, validation des doublons/encodages/limites.
+- Tous les bips historiques et Aucun, préécoute ; texte vide = bip seul.
+- Voix Android installées hors ligne ; microphone actif pendant les sorties.
+- Notification OrchiD / microphone actif. ; logo adapté en monochrome pour la
+  petite icône, conformément aux contraintes d'affichage Android.
+- Aucun mode de comptage des mots répétés.

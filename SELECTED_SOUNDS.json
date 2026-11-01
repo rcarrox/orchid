@@ -1,0 +1,42 @@
+[
+  {
+    "source_id": 11,
+    "name": "Petites marches",
+    "id": "soft_steps",
+    "sha256": "7af7a36b6e285dc23ed6c4d4ea42aa22088833f5318c4a1057db937540123500",
+    "frames": 20286,
+    "sample_rate": 22050,
+    "channels": 1,
+    "bits": 16
+  },
+  {
+    "source_id": 17,
+    "name": "Halo",
+    "id": "soft_halo",
+    "sha256": "330e3c1d341d17d21d2ef0db46ffc22e7cfe8307b5b0114c6dc66782fd8a6208",
+    "frames": 16758,
+    "sample_rate": 22050,
+    "channels": 1,
+    "bits": 16
+  },
+  {
+    "source_id": 18,
+    "name": "Cristal tendre",
+    "id": "soft_crystal",
+    "sha256": "48f0ccfe72bcda78263eaeedb0a31563370b0e47a90df95984fe1b346f105504",
+    "frames": 20066,
+    "sample_rate": 22050,
+    "channels": 1,
+    "bits": 16
+  },
+  {
+    "source_id": 20,
+    "name": "Rivage",
+    "id": "soft_shore",
+    "sha256": "f942cb1dd7f2b687520013b1c6fb9e8a52c8b016a1b05d2fcbf3eca78ff68d2a",
+    "frames": 26240,
+    "sample_rate": 22050,
+    "channels": 1,
+    "bits": 16
+  }
+]
